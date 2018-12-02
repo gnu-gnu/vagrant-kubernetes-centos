@@ -5,11 +5,6 @@ echo "192.168.55.12 worker1" >> /etc/hosts
 SCRIPT
 
 Vagrant.configure("2") do |config|
-  ## ssh settings
-#  config.ssh.insert_key = false
-#  config.ssh.private_key_path = ["./keys/private.key"]
-#  config.ssh.forward_agent = true
-  
   config.vm.define "master" do |master|
     master.vm.hostname = "master"
     master.ssh.port = 9922
@@ -18,7 +13,6 @@ Vagrant.configure("2") do |config|
     # id: 'ssh' override default ssh forwarded_port 2222 -> 22
     master.vm.network "forwarded_port", guest: 22, host: 9922, id: 'ssh'
     master.vm.network "forwarded_port", guest: 80, host: 8080
-    master.vm.provision "file", source: './keys/private.key', destination: "/home/vagrant/.ssh/authorized_keys"    
     master.vm.provision "shell", path: "./script/kube-activate-master.sh",privileged: false
   end
   
